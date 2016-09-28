@@ -19,13 +19,15 @@ namespace habemusPapa
 
         #region constructores
 
-        static Conclave()
+        private static Conclave()
         {
             cantidadVotaciones = 0;
             fechaVotacion = DateTime.Now;
+
+            Random votoRandom = new Random(); //Puedo agregar cambios mientras no se cambie la funcionalidad del sistema
         }
 
-        private Conclave()
+        public Conclave()
         {
             this._cantMaxCardenales = 1;
             this._lugarEleccion = "Capilla Sixtina";
@@ -91,18 +93,25 @@ namespace habemusPapa
 
         public void VotarPapa(Conclave conclave)
         {
-            Random votoRandom = new Random();
-
-            int indicePapal = votoRandom.Next(0, this._cantMaxCardenales);
+            
+            int indicePapal = Conclave.votoRandom.Next(0, this._cantMaxCardenales);
 
             for (int i = 0; i < conclave._cardenales.Count; i++)
             {
                 if (i == indicePapal)
                 {
-                    conclave._cardenales.ElementAt(i);
+                    conclave._cardenales[i]++;
                 }
-	
+
             }
+
+            //foreach (Cardenal item in conclave._cardenales)
+            //{
+            //    if (conclave._cardenales.IndexOf(item) == indicePapal)
+            //    {
+            //        return conclave._cardenales[]++;
+            //    }
+            //}
         }
 
         private void ContarVotos(Conclave conclave)
