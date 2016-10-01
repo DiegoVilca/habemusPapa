@@ -39,7 +39,7 @@ namespace habemusPapa
 
         #region Metodos
 
-        public int getCantidadVostosRecibidos()
+        public int getCantidadVotosRecibidos()
         {
             return this._cantVotosRecibidos;
         }
@@ -47,7 +47,7 @@ namespace habemusPapa
 
         public string ObtenerNombreYNombrePapal()
         {
-            return ("El cardenal " + this._nombre + " se llamara " + this._nombrePapal);
+            return ("El cardenal " + this._nombre + " se llamará \"papa " + this._nombrePapal + "\" ");  //Comando comillas \"
         }
 
 
@@ -56,9 +56,11 @@ namespace habemusPapa
         {
             StringBuilder sb = new StringBuilder();
 
+            
+            sb.AppendLine(ObtenerNombreYNombrePapal());
             sb.AppendLine("Nacionalidad: " + this._nacionalildad);
             sb.AppendLine("Votos Recibidos: " + this._cantVotosRecibidos);
-            sb.AppendLine(ObtenerNombreYNombrePapal());
+            
 
             return sb.ToString();
             
@@ -80,7 +82,7 @@ namespace habemusPapa
 
         public static bool operator ==(Cardenal c1, Cardenal c2)
         {
-            return c1._nombre == c2._nombre;
+            return (c1._nombre == c2._nombre && c1._nombrePapal == c2._nombrePapal && c1._nacionalildad == c2._nacionalildad);
         }
 
         public static bool operator !=(Cardenal c1, Cardenal c2)

@@ -15,32 +15,36 @@ namespace habemusPapa
         private Cardenal _papa;
         public static int cantidadVotaciones;
         public static DateTime fechaVotacion;
+        private static Random votoRandom; //Puedo agregar cambios mientras no se cambie la funcionalidad del sistema
+        
+
 
 
         #region constructores
 
-        private static Conclave()
+        static Conclave() //El constructor static no acepta modificadores de acceso, es privado (ver diagrama de clases)
         {
             cantidadVotaciones = 0;
             fechaVotacion = DateTime.Now;
 
-            Random votoRandom = new Random(); //Puedo agregar cambios mientras no se cambie la funcionalidad del sistema
+            votoRandom = new Random(); //Puedo agregar cambios mientras no se cambie la funcionalidad del sistema
         }
 
         public Conclave()
         {
             this._cantMaxCardenales = 1;
             this._lugarEleccion = "Capilla Sixtina";
+            this._cardenales = new List<Cardenal>();
         }
 
-        private Conclave(int cantidadCardenales) 
+        private Conclave(int cantidadCardenales) :this()
         {
-            
+            this._cantMaxCardenales = cantidadCardenales;
         }
 
         public Conclave(int cantidadCardenales, string lugarEleccion) :this(cantidadCardenales)
         {
-            this._lugarEleccion = lugarEleccion;
+            
         }
 
         
@@ -48,9 +52,9 @@ namespace habemusPapa
         #endregion constructores
 
 
-        #region metodos
-
         
+        
+        #region metodos
 
         private bool HayLugar()
         {
@@ -64,16 +68,27 @@ namespace habemusPapa
 
             StringBuilder sb = new StringBuilder();
 
-            sb.AppendLine("Lugar de votacion: "+this._lugarEleccion);
-            sb.AppendLine("Fecha de cotacion: "+fechaVotacion);
-            sb.AppendLine("Cantidad de veces que se voto: " + cantidadVotaciones);
+            sb.AppendLine("Lugar de la elección: "+this._lugarEleccion);
+            sb.AppendLine("Fecha: "+fechaVotacion);
+            sb.AppendLine("Cantidad de votaciones: " + cantidadVotaciones);
 
             if (this._habemusPapa)
             {
-                sb.AppendLine("HABEMUS PAPA");
+                sb.AppendLine("HABEMUS PAPA!!!!\n");
+                sb.AppendLine(this._papa.ObtenerNombreYNombrePapal());
+                
             }
             else
-                sb.AppendLine("NO HABEMUS PAPA");
+            {
+                sb.AppendLine("NO HABEMUS PAPA!!!!");
+                
+                sb.AppendLine("\nCARDENALES\n");
+
+                sb.AppendLine(MostrarCardenales());
+            
+            }
+                
+
 
             return sb.ToString();
                  
@@ -91,32 +106,52 @@ namespace habemusPapa
             return sb.ToString();
         }
 
-        public void VotarPapa(Conclave conclave)
+        public static void VotarPapa(Conclave conclave)
         {
+            //Votacion por cardenal
+            for (int i = 0; i < conclave._cardenales.Count; i++)
+            {
+
+                int indicePapal = Conclave.votoRandom.Next(0, conclave._cardenales.Count);
+                //Asignacion del voto de cada cardenal
+                for (int j = 0; j < conclave._cardenales.Count; j++)
+                {
+                    if (j == indicePapal)
+                    {
+                        conclave._cardenales[j]++;
+                        break;
+                    }
+
+                }
+            }
+                
             
-            int indicePapal = Conclave.votoRandom.Next(0, this._cantMaxCardenales);
+            //Resultado Votacion
+            ContarVotos(conclave);
+
+        }
+            
+
+        private static void ContarVotos(Conclave conclave)
+        {
 
             for (int i = 0; i < conclave._cardenales.Count; i++)
             {
-                if (i == indicePapal)
+                if (i == 0) //Evito comparar a los cardenales con un papa en null
                 {
-                    conclave._cardenales[i]++;
+                    conclave._papa = conclave._cardenales[i];
+                    conclave._habemusPapa = true;
+                    continue;
                 }
 
+
+                if (conclave._cardenales[i].getCantidadVotosRecibidos() > conclave._papa.getCantidadVotosRecibidos())
+                {
+                    conclave._papa = conclave._cardenales[i];
+                    conclave._habemusPapa = true;
+                }
             }
-
-            //foreach (Cardenal item in conclave._cardenales)
-            //{
-            //    if (conclave._cardenales.IndexOf(item) == indicePapal)
-            //    {
-            //        return conclave._cardenales[]++;
-            //    }
-            //}
-        }
-
-        private void ContarVotos(Conclave conclave)
-        {
-
+            
         }
 
         #endregion metodos
@@ -154,7 +189,17 @@ namespace habemusPapa
 
         public static Conclave operator +(Conclave con, Cardenal c)
         {
-            if(con == c && con.HayLugar())
+            if (con == c)
+            {
+                Console.WriteLine("El cardenal ya está en el Cónclave!!!");
+            }
+
+            if (con.HayLugar() == false)
+            {
+                Console.WriteLine("No hay más lugar!!!");
+            }
+
+            if (con != c && con.HayLugar())
             {
                 con._cardenales.Add(c);
 

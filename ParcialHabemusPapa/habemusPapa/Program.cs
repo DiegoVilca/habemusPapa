@@ -31,7 +31,7 @@ namespace habemusPapa
             //PROCESO DE VOTACION
             do
             {
-                //Conclave.VotarPapa(vaticano);
+                Conclave.VotarPapa(vaticano);
                 Conclave.cantidadVotaciones++;
             } while (!(bool)vaticano);
             //MUESTRO EL RESULTADO DEL CONCLAVE
